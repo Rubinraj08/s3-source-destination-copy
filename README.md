@@ -78,3 +78,39 @@ A **serverless AWS solution** that automatically copies files from one S3 bucket
     }
   ]
 }
+5️⃣ Click Review policy, name it S3CopyPolicy, then click Create policy
+
+5️⃣ Add the Lambda Code
+1️⃣ Go to the Code tab of Lambda
+2️⃣ Replace existing code with this:
+import boto3
+import os
+
+s3 = boto3.client('s3')
+
+def lambda_handler(event, context):
+    for record in event['Records']:
+        source_bucket = record['s3']['bucket']['name']
+        object_key = record['s3']['object']['key']
+        destination_bucket = os.environ['DEST_BUCKET']
+
+        copy_source = {'Bucket': source_bucket, 'Key': object_key}
+        
+        s3.copy_object(Bucket=destination_bucket, Key=object_key, CopySource=copy_source)
+    
+    return {"statusCode": 200, "body": "File copied successfully"}
+3️⃣ Click Deploy
+
+6️⃣ Set Up an S3 Trigger
+1️⃣ In Lambda, go to Configuration → Triggers
+2️⃣ Click Add trigger
+3️⃣ Select S3 as the trigger source
+4️⃣ Choose source-bucket-yourname
+5️⃣ Set Event type to PUT (Triggers on file upload)
+6️⃣ Click Add
+
+7️⃣ Test the Setup 🚀
+1️⃣ Open S3 Console and go to source-bucket-yourname
+2️⃣ Click Upload and select a test file (image, text file, etc.)
+3️⃣ Check destination-bucket-yourname
+4️⃣ Your file should be copied automatically! 🎉
