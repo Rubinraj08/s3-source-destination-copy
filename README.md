@@ -78,21 +78,22 @@ A **serverless AWS solution** that automatically copies files from one S3 bucket
     }
   ]
 }
+```
 5️⃣ Click Review policy, name it S3CopyPolicy, then click Create policy
 
 5️⃣ Add the Lambda Code
 1️⃣ Go to the Code tab of Lambda
 2️⃣ Replace existing code with this:
-import boto3
-import os
-
-s3 = boto3.client('s3')
-
-def lambda_handler(event, context):
-    for record in event['Records']:
-        source_bucket = record['s3']['bucket']['name']
-        object_key = record['s3']['object']['key']
-        destination_bucket = os.environ['DEST_BUCKET']
+   import boto3
+   import os
+   
+   s3 = boto3.client('s3')
+   
+   def lambda_handler(event, context):
+       for record in event['Records']:
+           source_bucket = record['s3']['bucket']['name']
+           object_key = record['s3']['object']['key']
+           destination_bucket = os.environ['DEST_BUCKET']
 
         copy_source = {'Bucket': source_bucket, 'Key': object_key}
         
@@ -108,6 +109,8 @@ def lambda_handler(event, context):
 4️⃣ Choose source-bucket-yourname
 5️⃣ Set Event type to PUT (Triggers on file upload)
 6️⃣ Click Add
+
+
 
 7️⃣ Test the Setup 🚀
 1️⃣ Open S3 Console and go to source-bucket-yourname
